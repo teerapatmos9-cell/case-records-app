@@ -69,11 +69,13 @@
   }
   .header-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
   }
   .header-actions button {
     flex: 1;
+    min-width: 0;
     background: rgba(255,255,255,0.06);
     color: #eef1f5;
     border: 1px solid rgba(255,255,255,0.09);
@@ -86,6 +88,7 @@
     gap: 5px;
     cursor: pointer;
   }
+  .header-actions button.full-row { flex-basis: 100%; }
   .header-actions button:active { transform: scale(0.97); }
   .header-actions .ti { font-size: 15px; }
 
@@ -255,6 +258,19 @@
     text-align: center;
   }
   .photo-placeholder .ti { font-size: 22px; }
+  .photo-slot-single {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }
+  .card-location-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: block;
+  }
   .badge {
     font-size: 10.5px;
     font-weight: 700;
@@ -425,6 +441,82 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   }
   .toast.show { opacity: 1; }
+
+  #printArea { display: none; }
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea {
+      display: block;
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      background: #fff;
+      color: #111;
+      font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, sans-serif;
+    }
+    .print-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .print-subtitle {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    .print-category-header {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 18px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #333;
+    }
+    .print-record {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      break-inside: avoid;
+    }
+    .print-record-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .print-record-row {
+      font-size: 11.5px;
+      color: #222;
+      margin-bottom: 2px;
+    }
+    .print-record-label {
+      font-weight: 600;
+      color: #555;
+    }
+    .print-photos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .print-photos figure {
+      margin: 0;
+      text-align: center;
+    }
+    .print-photos img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      display: block;
+    }
+    .print-photos figcaption {
+      font-size: 9px;
+      color: #666;
+      margin-top: 2px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -444,6 +536,7 @@
     <div class="header-actions">
       <button id="btnExport"><i class="ti ti-download" aria-hidden="true"></i>ส่งออก Excel</button>
       <button id="btnImportTrigger"><i class="ti ti-upload" aria-hidden="true"></i>นำเข้า Excel</button>
+      <button id="btnExportPdf" class="full-row"><i class="ti ti-file-type-pdf" aria-hidden="true"></i>ส่งออกทั้งหมดเป็น PDF</button>
       <input type="file" id="fileImport" accept=".xlsx,.xls" style="display:none;">
     </div>
   </div>
@@ -489,6 +582,16 @@
       </div>
       <div class="row2">
         <div class="field">
+          <label>ชื่อเล่น</label>
+          <input type="text" id="f_nickname" placeholder="เช่น ต้อม">
+        </div>
+        <div class="field">
+          <label>เลขบัตรประชาชน</label>
+          <input type="text" id="f_idcard" placeholder="13 หลัก" inputmode="numeric" maxlength="17">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
           <label>อายุ</label>
           <input type="number" id="f_age" placeholder="อายุ (ปี)">
         </div>
@@ -517,6 +620,12 @@
         <input type="text" id="f_location" placeholder="เช่น เขตบางนา กรุงเทพฯ">
       </div>
       <div class="field">
+        <label>ภาพสถานที่จับกุม</label>
+        <div class="photo-slot photo-slot-single" id="locationPhotoSlot">
+          <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>แตะเพื่อเพิ่มภาพสถานที่</span></div>
+        </div>
+      </div>
+      <div class="field">
         <label>สถานะ</label>
         <select id="f_status">
           <option>อยู่ระหว่างดำเนินคดี</option>
@@ -543,6 +652,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
+  <div id="printArea"></div>
 </div>
 
 <script>
@@ -551,6 +661,7 @@ let currentFilter = 'all';
 let currentSearch = '';
 let editingId = null;
 let currentPhotos = { front: null, left: null, right: null, back: null };
+let currentLocationPhoto = null;
 let activeSlot = null;
 const slotLabels = { front: 'ด้านหน้า', left: 'ด้านข้างซ้าย', right: 'ด้านข้างขวา', back: 'ด้านหลัง' };
 
@@ -666,13 +777,14 @@ function renderList() {
               return thumb ? `<img src="${thumb}" class="card-thumb" alt="รูปภาพ">` : '';
             })()}
             <div>
-              <div class="card-name">${escapeHtml(r.name)}</div>
-              <div class="card-meta">${r.caseNumber ? escapeHtml(r.caseNumber) + ' · ' : ''}${r.date || '-'}</div>
+              <div class="card-name">${escapeHtml(r.name)}${r.nickname ? ` <span style="font-weight:400;color:#8b96a8;">(${escapeHtml(r.nickname)})</span>` : ''}</div>
+              <div class="card-meta">${r.idCard ? escapeHtml(r.idCard) + ' · ' : ''}${r.caseNumber ? escapeHtml(r.caseNumber) + ' · ' : ''}${r.date || '-'}</div>
             </div>
           </div>
           <div class="badge badge-${cc}">${r.category}</div>
         </div>
         ${r.details ? `<div class="card-detail">${escapeHtml(r.details)}</div>` : ''}
+        ${r.locationPhoto ? `<img src="${r.locationPhoto}" class="card-location-thumb" alt="ภาพสถานที่จับกุม">` : ''}
         <div class="card-status">${r.status || '-'}</div>
         <div class="card-actions">
           <button class="btn-edit" data-id="${r.id}">แก้ไข</button>
@@ -713,10 +825,12 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 function openAdd() {
   editingId = null;
   currentPhotos = { front: null, left: null, right: null, back: null };
+  currentLocationPhoto = null;
   renderPhotoSlots();
+  renderLocationPhoto();
   document.getElementById('sheetTitle').textContent = 'เพิ่มข้อมูลคดี';
   document.getElementById('btnDelete').style.display = 'none';
-  ['f_name','f_age','f_caseNumber','f_date','f_location','f_details','f_notes'].forEach(id => document.getElementById(id).value = '');
+  ['f_name','f_nickname','f_idcard','f_age','f_caseNumber','f_date','f_location','f_details','f_notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f_category').value = currentFilter !== 'all' ? currentFilter : 'ยาเสพติด';
   document.getElementById('f_status').value = 'อยู่ระหว่างดำเนินคดี';
   document.getElementById('sheetOverlay').classList.add('open');
@@ -733,9 +847,13 @@ function openEdit(id) {
     currentPhotos = { front: r.photo || null, left: null, right: null, back: null };
   }
   renderPhotoSlots();
+  currentLocationPhoto = r.locationPhoto || null;
+  renderLocationPhoto();
   document.getElementById('sheetTitle').textContent = 'แก้ไขข้อมูลคดี';
   document.getElementById('btnDelete').style.display = 'block';
   document.getElementById('f_name').value = r.name || '';
+  document.getElementById('f_nickname').value = r.nickname || '';
+  document.getElementById('f_idcard').value = r.idCard || '';
   document.getElementById('f_age').value = r.age || '';
   document.getElementById('f_category').value = r.category || 'ยาเสพติด';
   document.getElementById('f_caseNumber').value = r.caseNumber || '';
@@ -772,13 +890,29 @@ document.getElementById('photoGrid').addEventListener('click', (e) => {
   }
 });
 
+document.getElementById('locationPhotoSlot').addEventListener('click', (e) => {
+  const removeBtn = e.target.closest('.photo-slot-x');
+  if (removeBtn) {
+    currentLocationPhoto = null;
+    renderLocationPhoto();
+    return;
+  }
+  activeSlot = 'location';
+  document.getElementById('f_photo').click();
+});
+
 document.getElementById('f_photo').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file || !activeSlot) return;
   try {
     const dataUrl = await resizeImageFile(file, 640, 0.72);
-    currentPhotos[activeSlot] = dataUrl;
-    renderPhotoSlots();
+    if (activeSlot === 'location') {
+      currentLocationPhoto = dataUrl;
+      renderLocationPhoto();
+    } else {
+      currentPhotos[activeSlot] = dataUrl;
+      renderPhotoSlots();
+    }
   } catch (err) {
     showToast('ไม่สามารถโหลดรูปภาพนี้ได้');
   }
@@ -804,6 +938,21 @@ function renderPhotoSlots() {
   });
 }
 
+function renderLocationPhoto() {
+  const slotEl = document.getElementById('locationPhotoSlot');
+  if (currentLocationPhoto) {
+    slotEl.innerHTML = `
+      <img src="${currentLocationPhoto}" alt="ภาพสถานที่จับกุม">
+      <button type="button" class="photo-slot-x" aria-label="ลบ">✕</button>
+      <div class="photo-slot-label">ภาพสถานที่จับกุม</div>
+    `;
+  } else {
+    slotEl.innerHTML = `
+      <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>แตะเพื่อเพิ่มภาพสถานที่</span></div>
+    `;
+  }
+}
+
 document.getElementById('btnSave').onclick = async () => {
   const name = document.getElementById('f_name').value.trim();
   if (!name) {
@@ -812,12 +961,15 @@ document.getElementById('btnSave').onclick = async () => {
   }
   const data = {
     name,
+    nickname: document.getElementById('f_nickname').value.trim(),
+    idCard: document.getElementById('f_idcard').value.trim(),
     photos: { ...currentPhotos },
     age: document.getElementById('f_age').value.trim(),
     category: document.getElementById('f_category').value,
     caseNumber: document.getElementById('f_caseNumber').value.trim(),
     date: document.getElementById('f_date').value,
     location: document.getElementById('f_location').value.trim(),
+    locationPhoto: currentLocationPhoto,
     status: document.getElementById('f_status').value,
     details: document.getElementById('f_details').value.trim(),
     notes: document.getElementById('f_notes').value.trim(),
@@ -846,6 +998,58 @@ document.getElementById('btnDelete').onclick = async () => {
   showToast('ลบข้อมูลแล้ว');
 };
 
+document.getElementById('btnExportPdf').onclick = () => {
+  if (records.length === 0) {
+    showToast('ยังไม่มีข้อมูลให้ส่งออก');
+    return;
+  }
+  const categories = ['ยาเสพติด', 'ลักทรัพย์', 'หมายจับ', 'บุคคลต้องสงสัย'];
+  const now = new Date();
+  const genDate = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  function photoFigure(url, label) {
+    if (!url) return '';
+    return `<figure><img src="${url}"><figcaption>${label}</figcaption></figure>`;
+  }
+
+  function recordBlock(r) {
+    const photos = r.photos || {};
+    const photosHtml = [
+      photoFigure(photos.front, 'ด้านหน้า'),
+      photoFigure(photos.left, 'ด้านข้างซ้าย'),
+      photoFigure(photos.right, 'ด้านข้างขวา'),
+      photoFigure(photos.back, 'ด้านหลัง'),
+      photoFigure(r.locationPhoto, 'สถานที่จับกุม'),
+    ].join('');
+    return `
+      <div class="print-record">
+        <div class="print-record-name">${escapeHtml(r.name)}${r.nickname ? ' (' + escapeHtml(r.nickname) + ')' : ''}</div>
+        <div class="print-record-row"><span class="print-record-label">เลขบัตรประชาชน:</span> ${escapeHtml(r.idCard || '-')} &nbsp; <span class="print-record-label">อายุ:</span> ${escapeHtml(r.age || '-')}</div>
+        <div class="print-record-row"><span class="print-record-label">เลขที่คดี/หมาย:</span> ${escapeHtml(r.caseNumber || '-')} &nbsp; <span class="print-record-label">วันที่:</span> ${escapeHtml(r.date || '-')}</div>
+        <div class="print-record-row"><span class="print-record-label">สถานที่:</span> ${escapeHtml(r.location || '-')}</div>
+        <div class="print-record-row"><span class="print-record-label">สถานะ:</span> ${escapeHtml(r.status || '-')}</div>
+        ${r.details ? `<div class="print-record-row"><span class="print-record-label">รายละเอียด:</span> ${escapeHtml(r.details)}</div>` : ''}
+        ${r.notes ? `<div class="print-record-row"><span class="print-record-label">หมายเหตุ:</span> ${escapeHtml(r.notes)}</div>` : ''}
+        ${photosHtml ? `<div class="print-photos">${photosHtml}</div>` : ''}
+      </div>
+    `;
+  }
+
+  let html = `
+    <div class="print-title">ทะเบียนข้อมูลคดี</div>
+    <div class="print-subtitle">พิมพ์เมื่อ ${genDate} · ทั้งหมด ${records.length} รายการ</div>
+  `;
+  categories.forEach(cat => {
+    const items = records.filter(r => r.category === cat);
+    if (items.length === 0) return;
+    html += `<div class="print-category-header">${cat} (${items.length} รายการ)</div>`;
+    html += items.map(recordBlock).join('');
+  });
+
+  document.getElementById('printArea').innerHTML = html;
+  window.print();
+};
+
 document.getElementById('btnExport').onclick = () => {
   if (records.length === 0) {
     showToast('ยังไม่มีข้อมูลให้ส่งออก');
@@ -853,6 +1057,8 @@ document.getElementById('btnExport').onclick = () => {
   }
   const rows = records.map(r => ({
     'ชื่อ-นามสกุล': r.name || '',
+    'ชื่อเล่น': r.nickname || '',
+    'เลขบัตรประชาชน': r.idCard || '',
     'อายุ': r.age || '',
     'ประเภทคดี': r.category || '',
     'เลขที่คดี / เลขหมาย': r.caseNumber || '',
@@ -898,6 +1104,8 @@ document.getElementById('fileImport').addEventListener('change', (e) => {
         records.push({
           id: uid(),
           name,
+          nickname: String(row['ชื่อเล่น'] || ''),
+          idCard: String(row['เลขบัตรประชาชน'] || ''),
           age: String(row['อายุ'] || ''),
           category: ['ยาเสพติด', 'ลักทรัพย์', 'หมายจับ', 'บุคคลต้องสงสัย'].includes(cat) ? cat : 'บุคคลต้องสงสัย',
           caseNumber: String(row['เลขที่คดี / เลขหมาย'] || ''),
