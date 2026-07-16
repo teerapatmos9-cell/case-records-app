@@ -16,27 +16,32 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    background: #efe9dc;
+    background: #0e1520;
     font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, sans-serif;
-    color: #241f18;
+    color: #e7ebf1;
     -webkit-tap-highlight-color: transparent;
   }
   #app {
     max-width: 430px;
     margin: 0 auto;
     min-height: 100vh;
-    background: #efe9dc;
+    background:
+      radial-gradient(900px 500px at 15% -10%, rgba(90,120,180,0.16), transparent 60%),
+      radial-gradient(700px 500px at 100% 10%, rgba(180,150,90,0.10), transparent 55%),
+      #0e1520;
     display: flex;
     flex-direction: column;
     position: relative;
   }
   .header {
-    background: #1e2a38;
-    color: #f2ede0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 70%);
+    color: #f4f2ea;
     padding: 22px 20px 18px;
     position: sticky;
     top: 0;
     z-index: 20;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(14px);
   }
   .header-title {
     font-family: Georgia, 'Times New Roman', serif;
@@ -46,7 +51,7 @@
   }
   .header-sub {
     font-size: 12px;
-    color: #9aa7b5;
+    color: #8b96a8;
     margin-top: 3px;
     font-variant: small-caps;
     letter-spacing: 0.5px;
@@ -60,6 +65,7 @@
     width: 48px;
     height: auto;
     flex-shrink: 0;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
   }
   .header-actions {
     display: flex;
@@ -68,11 +74,11 @@
   }
   .header-actions button {
     flex: 1;
-    background: #2c3a4a;
-    color: #f2ede0;
-    border: none;
+    background: rgba(255,255,255,0.06);
+    color: #eef1f5;
+    border: 1px solid rgba(255,255,255,0.09);
     padding: 8px 6px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 12.5px;
     display: flex;
     align-items: center;
@@ -89,24 +95,24 @@
   .search-bar input {
     width: 100%;
     padding: 9px 12px;
-    border-radius: 6px;
-    border: none;
-    background: #2c3a4a;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.05);
     color: #f2ede0;
     font-size: 14px;
   }
-  .search-bar input::placeholder { color: #7c8a99; }
+  .search-bar input::placeholder { color: #6d7889; }
 
   .tabs {
     display: flex;
     gap: 6px;
     padding: 10px 14px;
-    background: #efe9dc;
+    background: transparent;
     position: sticky;
     top: 136px;
     z-index: 19;
     overflow-x: auto;
-    border-bottom: 1px solid #d8d0bd;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .tab {
     flex: none;
@@ -114,17 +120,17 @@
     border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
-    border: 1.5px solid transparent;
+    border: 1px solid rgba(255,255,255,0.08);
     white-space: nowrap;
     cursor: pointer;
-    color: #55503f;
-    background: #e2dac6;
+    color: #a7b0bd;
+    background: rgba(255,255,255,0.05);
   }
-  .tab.active-all { background: #1e2a38; color: #f2ede0; }
-  .tab.active-drug { background: #7c4a24; color: #f7e9d8; }
-  .tab.active-theft { background: #3f6b4a; color: #e7f2e9; }
-  .tab.active-warrant { background: #8c2f2f; color: #f8e3e3; }
-  .tab.active-suspect { background: #4d3f6b; color: #e9e4f3; }
+  .tab.active-all { background: #eef1f5; color: #1a2330; border-color: transparent; }
+  .tab.active-drug { background: #d98a4a; color: #241304; border-color: transparent; }
+  .tab.active-theft { background: #5fae76; color: #072711; border-color: transparent; }
+  .tab.active-warrant { background: #e07070; color: #2b0808; border-color: transparent; }
+  .tab.active-suspect { background: #9b8bd9; color: #17102e; border-color: transparent; }
 
   .count-row {
     display: grid;
@@ -134,14 +140,14 @@
   }
   .count-card {
     flex: 1;
-    background: #fbf8f1;
-    border: 1px solid #d8d0bd;
-    border-radius: 10px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
     padding: 10px 8px;
     text-align: center;
   }
-  .count-num { font-size: 19px; font-weight: 700; font-family: Georgia, serif; }
-  .count-label { font-size: 10.5px; color: #75705f; margin-top: 2px; }
+  .count-num { font-size: 19px; font-weight: 700; font-family: Georgia, serif; color: #f0f2f5; }
+  .count-label { font-size: 10.5px; color: #8b96a8; margin-top: 2px; }
 
   .list {
     flex: 1;
@@ -150,28 +156,29 @@
   .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #8b8570;
+    color: #6d7889;
   }
   .empty-state .ti { font-size: 40px; opacity: 0.5; }
   .empty-state p { margin-top: 10px; font-size: 14px; }
 
   .card {
-    background: #fbf8f1;
-    border: 1px solid #d8d0bd;
-    border-radius: 10px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
     margin-bottom: 10px;
     overflow: hidden;
     position: relative;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
   }
   .card-tab {
     position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 5px;
+    width: 4px;
   }
-  .tab-drug { background: #a8622f; }
-  .tab-theft { background: #4a7a56; }
-  .tab-warrant { background: #a33939; }
-  .tab-suspect { background: #5c4d80; }
+  .tab-drug { background: #d98a4a; }
+  .tab-theft { background: #5fae76; }
+  .tab-warrant { background: #e07070; }
+  .tab-suspect { background: #9b8bd9; }
 
   .card-body { padding: 12px 14px 12px 18px; }
   .card-top {
@@ -180,8 +187,8 @@
     align-items: flex-start;
     gap: 8px;
   }
-  .card-name { font-size: 15.5px; font-weight: 700; }
-  .card-meta { font-size: 12px; color: #7a7563; margin-top: 2px; font-family: 'Courier New', monospace; }
+  .card-name { font-size: 15.5px; font-weight: 700; color: #f0f2f5; }
+  .card-meta { font-size: 12px; color: #8b96a8; margin-top: 2px; font-family: 'Courier New', monospace; }
   .card-photo-row { display: flex; gap: 10px; }
   .card-thumb {
     width: 52px;
@@ -189,61 +196,80 @@
     border-radius: 8px;
     object-fit: cover;
     flex-shrink: 0;
-    border: 1px solid #d8d0bd;
+    border: 1px solid rgba(255,255,255,0.12);
   }
-  .photo-upload {
-    width: 100%;
-    height: 140px;
-    border: 1.5px dashed #cfc6ae;
-    border-radius: 10px;
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .photo-slot {
+    position: relative;
+    border: 1.5px dashed rgba(255,255,255,0.16);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    background: #fffdf8;
-    overflow: hidden;
-    position: relative;
   }
-  .photo-upload img {
+  .photo-slot img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .photo-slot-label {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(10,15,22,0.72);
+    color: #f2ede0;
+    font-size: 11px;
+    text-align: center;
+    padding: 3px 0;
+    pointer-events: none;
+  }
+  .photo-slot-x {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(10,15,22,0.75);
+    color: #f2ede0;
+    border: none;
+    font-size: 13px;
+    line-height: 22px;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 2;
   }
   .photo-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    color: #9a917a;
-    font-size: 12.5px;
+    gap: 4px;
+    color: #6d7889;
+    font-size: 11px;
+    text-align: center;
   }
-  .photo-placeholder .ti { font-size: 26px; }
-  .btn-remove-photo {
-    margin-top: 8px;
-    width: 100%;
-    background: #f2ede0;
-    border: 1px solid #d8d0bd;
-    color: #7a2626;
-    padding: 8px;
-    border-radius: 7px;
-    font-size: 12.5px;
-    cursor: pointer;
-  }
+  .photo-placeholder .ti { font-size: 22px; }
   .badge {
     font-size: 10.5px;
     font-weight: 700;
     padding: 3px 8px;
-    border-radius: 5px;
+    border-radius: 6px;
     white-space: nowrap;
   }
-  .badge-drug { background: #f3e3d3; color: #6b3d1c; }
-  .badge-theft { background: #e0ecdf; color: #33532f; }
-  .badge-warrant { background: #f4dcdc; color: #7a2626; }
-  .badge-suspect { background: #e6e0f0; color: #453a63; }
+  .badge-drug { background: rgba(217,138,74,0.18); color: #e8a56b; }
+  .badge-theft { background: rgba(95,174,118,0.18); color: #7dc794; }
+  .badge-warrant { background: rgba(224,112,112,0.18); color: #ec9494; }
+  .badge-suspect { background: rgba(155,139,217,0.18); color: #b8abe8; }
 
   .card-detail {
     font-size: 13px;
-    color: #4a4638;
+    color: #b7bfca;
     margin-top: 8px;
     line-height: 1.5;
   }
@@ -252,26 +278,26 @@
     font-size: 11.5px;
     display: inline-block;
     padding: 2px 8px;
-    border-radius: 5px;
-    background: #eee8d8;
-    color: #5c5741;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.07);
+    color: #c7cedb;
     font-weight: 600;
   }
   .card-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
-    border-top: 1px solid #e8e1cf;
+    border-top: 1px solid rgba(255,255,255,0.07);
     padding-top: 8px;
   }
   .card-actions button {
     flex: 1;
     font-size: 12.5px;
     padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #d8d0bd;
-    background: #f2ede0;
-    color: #443f30;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #dbe1ea;
     cursor: pointer;
   }
   .card-actions button:active { transform: scale(0.97); }
@@ -283,11 +309,11 @@
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    background: #1e2a38;
-    color: #f2ede0;
+    background: linear-gradient(145deg, #d4af6a, #b8935f);
+    color: #201505;
     border: none;
     font-size: 26px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    box-shadow: 0 6px 18px rgba(212,175,106,0.35);
     cursor: pointer;
     z-index: 25;
   }
@@ -296,44 +322,49 @@
   .sheet-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(20,16,10,0.45);
+    background: rgba(6,9,14,0.6);
     z-index: 30;
     display: none;
     align-items: flex-end;
+    backdrop-filter: blur(3px);
   }
   .sheet-overlay.open { display: flex; }
   .sheet {
-    background: #f6f1e6;
+    background: #161f2b;
     width: 100%;
     max-height: 88vh;
-    border-radius: 16px 16px 0 0;
+    border-radius: 20px 20px 0 0;
     padding: 16px 18px 22px;
     overflow-y: auto;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.4);
   }
   .sheet-title {
     font-family: Georgia, serif;
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 14px;
+    color: #f0f2f5;
   }
   .field { margin-bottom: 12px; }
   .field label {
     display: block;
     font-size: 12.5px;
     font-weight: 600;
-    color: #5c5741;
+    color: #9aa5b4;
     margin-bottom: 5px;
   }
   .field input, .field select, .field textarea {
     width: 100%;
     padding: 9px 10px;
-    border-radius: 7px;
-    border: 1px solid #cfc6ae;
-    background: #fffdf8;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
     font-size: 14px;
     font-family: inherit;
-    color: #241f18;
+    color: #eef1f5;
   }
+  .field input::placeholder, .field textarea::placeholder { color: #5f6a7a; }
   .field textarea { resize: vertical; min-height: 60px; }
   .row2 { display: flex; gap: 10px; }
   .row2 > .field { flex: 1; }
@@ -345,31 +376,31 @@
   }
   .btn-save {
     flex: 2;
-    background: #1e2a38;
-    color: #f2ede0;
+    background: linear-gradient(145deg, #d4af6a, #b8935f);
+    color: #201505;
     border: none;
     padding: 11px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 14.5px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
   }
   .btn-cancel {
     flex: 1;
-    background: #e2dac6;
-    color: #443f30;
-    border: none;
+    background: rgba(255,255,255,0.07);
+    color: #dbe1ea;
+    border: 1px solid rgba(255,255,255,0.1);
     padding: 11px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 14.5px;
     cursor: pointer;
   }
   .btn-danger {
-    background: #f4dcdc;
-    color: #7a2626;
-    border: none;
+    background: rgba(224,112,112,0.14);
+    color: #ec9494;
+    border: 1px solid rgba(224,112,112,0.25);
     padding: 11px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
@@ -381,15 +412,17 @@
     bottom: 90px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1e2a38;
-    color: #f2ede0;
+    background: #eef1f5;
+    color: #1a2330;
     padding: 9px 18px;
     border-radius: 20px;
     font-size: 13px;
+    font-weight: 600;
     z-index: 40;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   }
   .toast.show { opacity: 1; }
 </style>
@@ -433,16 +466,22 @@
     <div class="sheet">
       <div class="sheet-title" id="sheetTitle">เพิ่มข้อมูลคดี</div>
       <div class="field">
-        <label>รูปภาพ</label>
-        <div class="photo-upload" id="photoUpload">
-          <img id="photoPreview" style="display:none;">
-          <div class="photo-placeholder" id="photoPlaceholder">
-            <i class="ti ti-camera" aria-hidden="true"></i>
-            <span>แตะเพื่อเพิ่มรูปภาพ</span>
+        <label>รูปภาพ 4 ด้าน</label>
+        <div class="photo-grid" id="photoGrid">
+          <div class="photo-slot" data-slot="front">
+            <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>ด้านหน้า</span></div>
+          </div>
+          <div class="photo-slot" data-slot="left">
+            <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>ด้านข้างซ้าย</span></div>
+          </div>
+          <div class="photo-slot" data-slot="right">
+            <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>ด้านข้างขวา</span></div>
+          </div>
+          <div class="photo-slot" data-slot="back">
+            <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>ด้านหลัง</span></div>
           </div>
         </div>
         <input type="file" id="f_photo" accept="image/*" style="display:none;">
-        <button type="button" class="btn-remove-photo" id="btnRemovePhoto" style="display:none;">ลบรูปภาพ</button>
       </div>
       <div class="field">
         <label>ชื่อ-นามสกุล *</label>
@@ -511,7 +550,9 @@ let records = [];
 let currentFilter = 'all';
 let currentSearch = '';
 let editingId = null;
-let currentPhoto = null;
+let currentPhotos = { front: null, left: null, right: null, back: null };
+let activeSlot = null;
+const slotLabels = { front: 'ด้านหน้า', left: 'ด้านข้างซ้าย', right: 'ด้านข้างขวา', back: 'ด้านหลัง' };
 
 function uid() {
   return 'r' + Date.now() + Math.random().toString(36).slice(2, 7);
@@ -620,7 +661,10 @@ function renderList() {
       <div class="card-body">
         <div class="card-top">
           <div class="card-photo-row">
-            ${r.photo ? `<img src="${r.photo}" class="card-thumb" alt="รูปภาพ">` : ''}
+            ${(() => {
+              const thumb = (r.photos && (r.photos.front || r.photos.left || r.photos.right || r.photos.back)) || r.photo || '';
+              return thumb ? `<img src="${thumb}" class="card-thumb" alt="รูปภาพ">` : '';
+            })()}
             <div>
               <div class="card-name">${escapeHtml(r.name)}</div>
               <div class="card-meta">${r.caseNumber ? escapeHtml(r.caseNumber) + ' · ' : ''}${r.date || '-'}</div>
@@ -668,8 +712,8 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 
 function openAdd() {
   editingId = null;
-  currentPhoto = null;
-  setPhotoPreview(null);
+  currentPhotos = { front: null, left: null, right: null, back: null };
+  renderPhotoSlots();
   document.getElementById('sheetTitle').textContent = 'เพิ่มข้อมูลคดี';
   document.getElementById('btnDelete').style.display = 'none';
   ['f_name','f_age','f_caseNumber','f_date','f_location','f_details','f_notes'].forEach(id => document.getElementById(id).value = '');
@@ -682,8 +726,13 @@ function openEdit(id) {
   const r = records.find(x => x.id === id);
   if (!r) return;
   editingId = id;
-  currentPhoto = r.photo || null;
-  setPhotoPreview(currentPhoto);
+  if (r.photos) {
+    currentPhotos = { front: r.photos.front || null, left: r.photos.left || null, right: r.photos.right || null, back: r.photos.back || null };
+  } else {
+    // backward compatibility with older single-photo records
+    currentPhotos = { front: r.photo || null, left: null, right: null, back: null };
+  }
+  renderPhotoSlots();
   document.getElementById('sheetTitle').textContent = 'แก้ไขข้อมูลคดี';
   document.getElementById('btnDelete').style.display = 'block';
   document.getElementById('f_name').value = r.name || '';
@@ -708,43 +757,51 @@ document.getElementById('sheetOverlay').addEventListener('click', (e) => {
   if (e.target.id === 'sheetOverlay') closeSheet();
 });
 
-document.getElementById('photoUpload').onclick = () => {
-  document.getElementById('f_photo').click();
-};
+document.getElementById('photoGrid').addEventListener('click', (e) => {
+  const removeBtn = e.target.closest('.photo-slot-x');
+  if (removeBtn) {
+    const slot = removeBtn.closest('.photo-slot').dataset.slot;
+    currentPhotos[slot] = null;
+    renderPhotoSlots();
+    return;
+  }
+  const slotEl = e.target.closest('.photo-slot');
+  if (slotEl) {
+    activeSlot = slotEl.dataset.slot;
+    document.getElementById('f_photo').click();
+  }
+});
 
 document.getElementById('f_photo').addEventListener('change', async (e) => {
   const file = e.target.files[0];
-  if (!file) return;
+  if (!file || !activeSlot) return;
   try {
     const dataUrl = await resizeImageFile(file, 640, 0.72);
-    currentPhoto = dataUrl;
-    setPhotoPreview(dataUrl);
+    currentPhotos[activeSlot] = dataUrl;
+    renderPhotoSlots();
   } catch (err) {
     showToast('ไม่สามารถโหลดรูปภาพนี้ได้');
   }
   e.target.value = '';
 });
 
-document.getElementById('btnRemovePhoto').onclick = () => {
-  currentPhoto = null;
-  setPhotoPreview(null);
-};
-
-function setPhotoPreview(dataUrl) {
-  const img = document.getElementById('photoPreview');
-  const placeholder = document.getElementById('photoPlaceholder');
-  const removeBtn = document.getElementById('btnRemovePhoto');
-  if (dataUrl) {
-    img.src = dataUrl;
-    img.style.display = 'block';
-    placeholder.style.display = 'none';
-    removeBtn.style.display = 'block';
-  } else {
-    img.style.display = 'none';
-    img.src = '';
-    placeholder.style.display = 'flex';
-    removeBtn.style.display = 'none';
-  }
+function renderPhotoSlots() {
+  const grid = document.getElementById('photoGrid');
+  grid.querySelectorAll('.photo-slot').forEach(slotEl => {
+    const slot = slotEl.dataset.slot;
+    const dataUrl = currentPhotos[slot];
+    if (dataUrl) {
+      slotEl.innerHTML = `
+        <img src="${dataUrl}" alt="${slotLabels[slot]}">
+        <button type="button" class="photo-slot-x" aria-label="ลบ">✕</button>
+        <div class="photo-slot-label">${slotLabels[slot]}</div>
+      `;
+    } else {
+      slotEl.innerHTML = `
+        <div class="photo-placeholder"><i class="ti ti-camera" aria-hidden="true"></i><span>${slotLabels[slot]}</span></div>
+      `;
+    }
+  });
 }
 
 document.getElementById('btnSave').onclick = async () => {
@@ -755,7 +812,7 @@ document.getElementById('btnSave').onclick = async () => {
   }
   const data = {
     name,
-    photo: currentPhoto,
+    photos: { ...currentPhotos },
     age: document.getElementById('f_age').value.trim(),
     category: document.getElementById('f_category').value,
     caseNumber: document.getElementById('f_caseNumber').value.trim(),
