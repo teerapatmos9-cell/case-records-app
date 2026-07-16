@@ -866,10 +866,14 @@ document.getElementById('btnLogin').onclick = () => {
     return;
   }
   auth.signInWithEmailAndPassword(email, password).catch((err) => {
-    errorBox.textContent = 'เข้าสู่ระบบไม่สำเร็จ: อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+    errorBox.textContent = `เข้าสู่ระบบไม่สำเร็จ (${err.code}): ${err.message}`;
     errorBox.style.display = 'block';
   });
 };
+
+document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('btnLogin').click();
+});
 
 document.getElementById('btnLogout').onclick = () => {
   auth.signOut();
